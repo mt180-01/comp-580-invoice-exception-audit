@@ -1,0 +1,10 @@
+_ > nanoagent.plugin.v0001.ProductConfig:
+tagline: Check invoice batches against purchase orders and a fixed policy.
+summary: Audit a fictional batch, flag exceptions, and reconcile a saved report with submitted totals.
+highlights:
+  - Compare amounts exactly in integer cents.
+  - Detect resubmissions across invoice pages.
+steps:
+  - Read the batch and look up its purchase orders.
+  - Record approval or review with all applicable reasons.
+  - Submit totals for deterministic verification.

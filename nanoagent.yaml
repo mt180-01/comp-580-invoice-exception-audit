@@ -1,0 +1,42 @@
+_ > nanoagent.plugin.v0001.ManifestConfig:
+id: invoice-exception-audit
+name: Invoice Exception Audit
+version: 0.2.0
+status: ready
+spec: nanoagent.plugin/v0001
+
+runtime > nanoagent.plugin.v0001.RuntimeConfig:
+  type: mcp_stdio
+  command: [uv, run, --frozen, python, -m, plugin]
+
+permissions > nanoagent.plugin.v0001.PermissionsConfig:
+  network > nanoagent.plugin.v0001.NetworkConfig:
+    hosts: []
+  filesystem > nanoagent.plugin.v0001.FilesystemConfig:
+    write: [workspace]
+
+tools > dict[contract.Tool, nanoagent.plugin.v0001.ToolConfig]:
+  check_workspace:
+    description: Validate and fingerprint this run's input dataset, and confirm the workspace has no earlier result.
+  list_invoices:
+    description: Read one page of the requested batch.
+  get_purchase_orders:
+    description: Look up the requested purchase orders together.
+  save_decisions:
+    description: Save the audit decisions and return the invoice IDs written.
+
+tasks > dict[contract.Task, nanoagent.plugin.v0001.TaskConfig]:
+  audit-invoices:
+    description: Audit the fictional invoice batch and submit decision totals.
+    runner: agent
+    tools: [list_invoices, get_purchase_orders, save_decisions]
+    reference: check_workspace
+    instructions: |-
+      Copy the complete task input, including dataset, into each tool call. A non-null dataset supplies this run's invoices and purchase orders. A null dataset selects the bundled batch-001 example. List invoices with a null cursor first, then follow next_cursor until null. Look up all distinct referenced purchase orders in one call. Audit each invoice under policy v1 and save all decisions in one call.
+      Include every applicable reason in this exact order.
+      DUPLICATE_SUBMISSION applies to every submission after the earliest one with the same vendor_id and vendor_invoice_number in the batch. Order submissions by submission_sequence. Ignore filename, amount and PO reference for duplicate detection.
+      MISSING_PURCHASE_ORDER applies when the referenced PO lookup returns a null authorized_amount_cents. Skip the amount check for that invoice.
+      OVER_TOLERANCE applies when invoice amount_cents minus PO authorized_amount_cents is strictly greater than dataset.tolerance_cents, or 500 when dataset is null. An overage equal to the tolerance passes this check.
+      With no reasons, set decision to APPROVE and approved_amount_cents to the full invoice amount. Otherwise set decision to REVIEW and approved_amount_cents to zero.
+      Save an empty decisions list for an empty batch. After saving all rows, call submit with total_count, approved_count, and review_count for the saved decisions.
+

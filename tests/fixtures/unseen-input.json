@@ -1,0 +1,20 @@
+{
+  "batch_id": "new-batch",
+  "policy_version": "v1",
+  "dataset": {
+    "tolerance_cents": 37,
+    "purchase_orders": [
+      {"purchase_order_id": "ORDER-X", "authorized_amount_cents": 10000},
+      {"purchase_order_id": "ORDER-ZERO", "authorized_amount_cents": 0}
+    ],
+    "invoices": [
+      {"invoice_id": "N1", "vendor_id": "A", "vendor_invoice_number": "Q", "purchase_order_id": "ORDER-X", "filename": "later.pdf", "submission_sequence": 20, "amount_cents": 10037},
+      {"invoice_id": "N2", "vendor_id": "A", "vendor_invoice_number": "Q", "purchase_order_id": "ORDER-X", "filename": "earlier.pdf", "submission_sequence": 10, "amount_cents": 10038},
+      {"invoice_id": "N3", "vendor_id": "B", "vendor_invoice_number": "Q", "purchase_order_id": "ORDER-X", "filename": "boundary.pdf", "submission_sequence": 30, "amount_cents": 10037},
+      {"invoice_id": "N4", "vendor_id": "C", "vendor_invoice_number": "W", "purchase_order_id": "ORDER-X", "filename": "over.pdf", "submission_sequence": 40, "amount_cents": 10038},
+      {"invoice_id": "N5", "vendor_id": "A", "vendor_invoice_number": "M", "purchase_order_id": "ABSENT", "filename": "missing.pdf", "submission_sequence": 50, "amount_cents": 500},
+      {"invoice_id": "N6", "vendor_id": "A", "vendor_invoice_number": "M", "purchase_order_id": "ABSENT", "filename": "resubmitted.pdf", "submission_sequence": 60, "amount_cents": 500},
+      {"invoice_id": "N7", "vendor_id": "D", "vendor_invoice_number": "Z", "purchase_order_id": "ORDER-ZERO", "filename": "zero.pdf", "submission_sequence": 70, "amount_cents": 0}
+    ]
+  }
+}
